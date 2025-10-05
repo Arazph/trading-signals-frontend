@@ -6,57 +6,121 @@
   <style>
     :root[data-theme="dark"]{--bg:#111;--text:#0f0;--panel:#000;--btn:#222}
     :root[data-theme="light"]{--bg:#fff;--text:#222;--panel:#f7f7f7;--btn:#ddd}
-    body{font-family:system-ui;background:var(--bg);color:var(--text);padding:2rem;max-width:600px;margin:auto}
+    body{font-family:system-ui;background:var(--bg);color:var(--text);padding:2rem;max-width:700px;margin:auto}
     label,input,button,select{padding:8px;font-size:16px;margin:4px 0}
     input{width:100px}
     pre{background:var(--panel);padding:1rem;white-space:pre-wrap}
     .error{color:#f44}
-    #themeToggle{float:right;cursor:pointer;padding:4px 8px}
+    #topBar{display:flex;justify-content:space-between;align-items:center}
   </style>
 </head>
 <body>
-  <button id="themeToggle">🌓</button>
-  <h1>Free Trading Signals (v0.1)</h1>
+  <div id="topBar">
+    <select id="lang"></select>
+    <button id="themeToggle">🌓</button>
+  </div>
 
-  <label>Coin:
+  <h1 id="title">Free Trading Signals (v0.1)</h1>
+
+  <label id="coinLbl">Coin:
     <input id="coin" placeholder="BTC" value="BTC"/>
   </label>
-  <label>SL %:
+  <label id="slLbl">SL %:
     <input id="sl" type="number" min="0.5" max="10" step="0.1" value="2"/>
   </label>
+
   <button id="go">Get Signal</button>
+  <button id="csv">Export CSV</button>
 
   <pre id="out">Click Get Signal</pre>
 
   <script>
     const HF = 'https://arazph-trading-signals-backend.hf.space/signal';
     const body = document.body;
-    const toggle = document.getElementById('themeToggle');
     const html = document.documentElement;
 
-    // load saved theme
-    const saved = localStorage.getItem('theme') || 'dark';
-    html.setAttribute('data-theme', saved);
+    // ===== I18N =====
+    const texts = {
+      en:{title:"Free Trading Signals (v0.1)",coin:"Coin",sl:"SL %",go:"Get Signal",csv:"Export CSV",out:"Click Get Signal",loading:"⏳ loading…",error:"❌ "},
+      es:{title:"Señales de Trading Gratis (v0.1)",coin:"Moneda",sl:"SL %",go:"Obtener Señal",csv:"Exportar CSV",out:"Haz clic para obtener señal",loading:"⏳ cargando…",error:"❌ "},
+      fr:{title:"Signaux de Trading Gratuits (v0.1)",coin:"Pièce",sl:"SL %",go:"Obtenir Signal",csv:"Exporter CSV",out:"Cliquez pour obtenir le signal",loading:"⏳ chargement…",error:"❌ "},
+      ar:{title:"إشارات تداول مجانية (v0.1)",coin:"عملة",sl:"SL %",go:"احصل على الإشارة",csv:"تصدير CSV",out:"انقر للحصول على الإشارة",loading:"⏳ جاري التحميل…",error:"❌ "},
+      tr:{title:"Ücretsiz Trading Sinyalleri (v0.1)",coin:"Coin",sl:"SL %",go:"Sinyal Al",csv:"CSV Dışa Aktar",out:"Sinyal almak için tıklayın",loading:"⏳ yükleniyor…",error:"❌ "},
+      ru:{title:"Бесплатные Торговые Сигналы (v0.1)",coin:"Монета",sl:"SL %",go:"Получить Сигнал",csv:"Экспорт CSV",out:"Нажмите, чтобы получить сигнал",loading:"⏳ загрузка…",error:"❌ "},
+      "zh-CN":{title:"免费交易信号 (v0.1)",coin:"币种",sl:"SL %",go:"获取信号",csv:"导出 CSV",out:"点击获取信号",loading:"⏳ 加载中…",error:"❌ "},
+      pt:{title:"Sinais de Trading Gratuitos (v0.1)",coin:"Moeda",sl:"SL %",go:"Obter Sinal",csv:"Exportar CSV",out:"Clique para obter o sinal",loading:"⏳ carregando…",error:"❌ "},
+      id:{title:"Sinyal Trading Gratis (v0.1)",coin:"Koin",sl:"SL %",go:"Dapatkan Sinyal",csv:"Ekspor CSV",out:"Klik untuk mendapatkan sinyal",loading:"⏳ memuat…",error:"❌ "},
+      vi:{title:"Tín Hiệu Giao Dịch Miễn Phí (v0.1)",coin:"Coin",sl:"SL %",go:"Lấy Tín Hiệu",csv:"Xuất CSV",out:"Nhấn để lấy tín hiệu",loading:"⏳ đang tải…",error:"❌ "}
+    };
 
-    toggle.addEventListener('click', () => {
-      const current = html.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
+    const langSel = document.getElementById('lang');
+    const ui = {};
+    ["title","coinLbl","slLbl","go","csv","out"].forEach(id=>ui[id]=document.getElementById(id));
+
+    function setLang(lang){
+      if(!texts[lang]) lang='en';
+      html.setAttribute('lang',lang);
+      localStorage.setItem('lang',lang);
+      Object.keys(ui).forEach(id=>ui[id].childNodes[0].textContent=texts[lang][id]);
+      langSel.value=lang;
+    }
+    // auto-detect browser lang
+    const browserLang = navigator.language.slice(0,2);
+    const savedLang   = localStorage.getItem('lang') || browserLang;
+    // fill selector
+    Object.keys(texts).forEach(l=>{
+      const o=document.createElement('option');o.value=l;o.textContent=l.toUpperCase();langSel.appendChild(o);
+    });
+    langSel.addEventListener('change',e=>setLang(e.target.value));
+    setLang(savedLang);
+
+    // ===== THEME =====
+    const toggle = document.getElementById('themeToggle');
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    html.setAttribute('data-theme',savedTheme);
+    toggle.addEventListener('click',()=>{
+      const cur=html.getAttribute('data-theme');
+      const nxt=cur==='dark'?'light':'dark';
+      html.setAttribute('data-theme',nxt);
+      localStorage.setItem('theme',nxt);
     });
 
+    // ===== SIGNAL + CSV =====
+    let lastSignal = null;
     document.getElementById('go').onclick = async () => {
       const c = document.getElementById('coin').value.trim() || 'BTC';
       const s = document.getElementById('sl').value;
-      document.getElementById('out').textContent = '⏳ loading…';
+      ui.out.textContent = texts[savedLang].loading;
       try {
-        const r = await fetch(`${HF}?symbol=${c}&sl_pct=${s}`);
-        if (!r.ok) throw new Error('Backend error '+r.status);
-        const j = await r.json();
-        document.getElementById('out').textContent = JSON.stringify(j,null,2);
+        const res = await fetch(`${HF}?symbol=${c}&sl_pct=${s}`);
+        if (!res.ok) throw new Error('Backend error '+res.status);
+        lastSignal = await res.json();
+        ui.out.textContent = JSON.stringify(lastSignal,null,2);
       } catch (e) {
-        document.getElementById('out').textContent = '❌ '+e;
+        ui.out.textContent = texts[savedLang].error + e;
       }
+    };
+
+    document.getElementById('csv').onclick = () => {
+      if (!lastSignal) return alert('Get a signal first');
+      const row = [
+        new Date().toISOString(),
+        lastSignal.symbol,
+        lastSignal.direction,
+        lastSignal.entry,
+        lastSignal.sl,
+        lastSignal.tp,
+        lastSignal.confidence,
+        lastSignal.why
+      ];
+      const csv = row.map(x=>'"'+String(x).replace(/"/g,'""')+'"').join(',');
+      const blob = new Blob([csv],{type:'text/csv'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'trade_'+lastSignal.symbol+'_'+Date.now()+'.csv';
+      a.click();
+      URL.revokeObjectURL(url);
     };
   </script>
 </body>
