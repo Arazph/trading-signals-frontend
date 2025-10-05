@@ -1,0 +1,25 @@
+name: Hourly Global Scanner
+
+on:
+  schedule:
+    - cron: "0 * * * *"   # every hour
+  workflow_dispatch:      # manual button too
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests==2.32.3
+      - name: Scan & log
+        env:
+          HF_URL: https://arazph-trading-signals-backend.hf.space
+          GSHEET_KEY: ${{ secrets.GSHEET_KEY }}
+          GSHEET_ID:  ${{ secrets.GSHEET_ID }}
+          TG_BOT:     ${{ secrets.TG_BOT }}
+          TG_CHAT:    ${{ secrets.TG_CHAT }}
+          DISCORD:    ${{ secrets.DISCORD }}
+        run: python scripts/scanner.py
