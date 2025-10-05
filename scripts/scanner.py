@@ -12,13 +12,13 @@ def main():
     row = [now, COIN, sig["direction"], sig["entry"], sig["sl"], sig["tp"], sig["confidence"], sig["why"]]
     print("Signal row:", row)
 
-    # Google Sheets (optional)
+    # Google Sheets – hard-coded correct ID for this test
     key = os.getenv("GSHEET_KEY")
-    gid = os.getenv("GSHEET_ID")
-    if key and gid:
+    gid = "1dxt49XwMX2XSQu1rFajR8_L-QuMJUrmFm2LVhK3v3c0"   # <-- hard-coded
+    if key:
         sheet_append(gid, key, row)
 
-    # Telegram (optional)
+    # Telegram
     bot  = os.getenv("TG_BOT")
     chat = os.getenv("TG_CHAT")
     if bot and chat:
@@ -26,12 +26,11 @@ def main():
         r.post(f"https://api.telegram.org/bot{bot}/sendMessage", json={"chat_id":chat,"text":txt})
         print("Telegram sent")
 
-    # Discord (optional)
+    # Discord
     hook = os.getenv("DISCORD")
     if hook:
         r.post(hook, json={"content": f"🚀 {COIN} {sig['direction']}  Entry={sig['entry']}  SL={sig['sl']}  TP={sig['tp']}  Conf={sig['confidence']}%"})
         print("Discord posted")
-
 def sheet_append(gid, key, row):
     print("Raw GSHEET_ID from env:", repr(gid))
     url = f"https://sheets.googleapis.com/v4/spreadsheets/{gid.strip()}/values/A:H/append?valueInputOption=RAW"
