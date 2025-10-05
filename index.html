@@ -1,38 +1,58 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Trading Signals v0.1</title>
+  <title>Trading Signals Pro · v0.1</title>
+
+  <!-- Pre-connects for speed -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
   <style>
-    /* ---------- theme vars ---------- */
-    :root[data-theme="dark"]{--bg:#0d1117;--card:#161b22;--text:#c9d1d9;--accent:#58a6ff;--green:#3fb950;--red:#f85149}
-    :root[data-theme="light"]{--bg:#f6f8fa;--card:#ffffff;--text:#24292f;--accent:#0969da;--green:#1a7f37;--red:#d1242f}
-    /* ---------- global ---------- */
-    *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
-    body{margin:0;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+    /* ---------- theme ---------- */
+    :root[data-theme="dark"]{--bg:#0f172a;--surface:#1e293b;--border:#334155;--text:#f1f5f9;--sub:#94a3b8;--accent:#38bdf8;--profit:#34d399;--loss:#f87171}
+    :root[data-theme="light"]{--bg:#f8fafc;--surface:#ffffff;--border:#e2e8f0;--text:#0f172a;--sub:#64748b;--accent:#0ea5e9;--profit:#10b981;--loss:#ef4444}
+    /* ---------- reset ---------- */
+    *{box-sizing:border-box;font-family:'Inter',system-ui,sans-serif}
+    body{margin:0;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;font-feature-settings:'tnum'}
     /* ---------- glass card ---------- */
-    .card{background:var(--card);border:1px solid var(--bg);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.2);width:100%;max-width:420px;padding:2rem;backdrop-filter:blur(4px);animation:fadeIn .6s ease-out}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .card{width:100%;max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:24px;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);padding:2rem;display:flex;flex-direction:column;gap:1.25rem;animation:fadeIn .7s ease-out}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
     /* ---------- header ---------- */
-    .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
-    h1{margin:0;font-size:1.5rem;font-weight:600}
-    #themeToggle{background:var(--card);border:1px solid var(--bg);border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;transition:transform .2s}
+    .head{display:flex;justify-content:space-between;align-items:center}
+    .logo{font-size:1.5rem;font-weight:700;letter-spacing:-.5px}
+    #themeToggle{background:var(--surface);border:1px solid var(--border);border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;transition:transform .2s}
     #themeToggle:hover{transform:rotate(30deg)}
-    /* ---------- form ---------- */
-    .form{display:flex;flex-direction:column;gap:.75rem}
-    label{font-size:.9rem;font-weight:500}
-    input,select{padding:.75rem;border:1px solid var(--bg);border-radius:8px;background:var(--card);color:var(--text);font-size:1rem;transition:border-color .2s}
-    input:focus,select:focus{outline:none;border-color:var(--accent)}
+    /* ---------- inputs ---------- */
+    .input-group{display:flex;flex-direction:column;gap:.25rem}
+    .input-group label{font-size:.875rem;font-weight:500}
+    .input-group input,.input-group select{padding:.75rem;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font-size:1rem;transition:border-color .2s}
+    .input-group input:focus,.input-group select:focus{outline:none;border-color:var(--accent)}
     /* ---------- buttons ---------- */
-    .btn{padding:.75rem 1rem;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s}
-    .primary{background:var(--accent);color:#fff}
-    .primary:hover{filter:brightness(1.1)}
-    .secondary{background:var(--card);color:var(--accent);border:1px solid var(--accent)}
-    /* ---------- output ---------- */
-    pre{margin:1rem 0 0;padding:1rem;border-radius:8px;background:var(--bg);font-size:.9rem;max-height:300px;overflow:auto}
-    /* ---------- lang selector ---------- */
-    #lang{background:var(--card);border:1px solid var(--bg);border-radius:8px;padding:.25rem .5rem;font-size:.8rem}
+    .btn{display:flex;align-items:center;justify-content:center;padding:.875rem 1rem;border-radius:12px;font-size:1rem;font-weight:600;border:none;cursor:pointer;transition:all .2s}
+    .btn-primary{background:var(--accent);color:#fff}
+    .btn-primary:hover{filter:brightness(1.1)}
+    .btn-secondary{background:transparent;color:var(--accent);border:1px solid var(--accent)}
+    .btn-secondary:hover{background:var(--accent);color:#fff}
+    /* ---------- result card ---------- */
+    .result{display:none;flex-direction:column;gap:1rem;margin-top:1rem}
+    .result.show{display:flex}
+    .badge{align-self:flex-start;padding:.25rem .75rem;border-radius:999px;font-size:.75rem;font-weight:600;text-transform:uppercase}
+    .badge-long{background:var(--profit);color:#fff}
+    .badge-short{background:var(--loss);color:#fff}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .cell{background:var(--bg);padding:1rem;border-radius:12px}
+    .cell .label{font-size:.75rem;opacity:.7;margin-bottom:.25rem}
+    .cell .value{font-size:1.125rem;font-weight:600}
+    .note{font-size:.8125rem;opacity:.7}
+    /* ---------- lang ---------- */
+    #lang{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.25rem .5rem;font-size:.8rem}
+    /* ---------- utils ---------- */
+    .flex{display:flex;gap:.5rem}
+    .mt-1{margin-top:.25rem}
+    .text-center{text-align:center}
   </style>
 </head>
 <body>
@@ -42,38 +62,75 @@
       <button id="themeToggle" title="Toggle theme">🌓</button>
     </div>
 
-    <h1 id="title">Free Trading Signals (v0.1)</h1>
+    <div class="logo" id="title">Trading Signals Pro · v0.1</div>
 
-    <div class="form">
+    <div class="input-group">
       <label id="coinLbl">Coin</label>
       <input id="coin" placeholder="BTC" value="BTC"/>
-
-      <label id="slLbl">SL %</label>
-      <input id="sl" type="number" min="0.5" max="10" step="0.1" value="2"/>
-
-      <button id="go" class="btn primary">Get Signal</button>
-      <button id="csv" class="btn secondary">Export CSV</button>
     </div>
 
-    <pre id="out">Click Get Signal</pre>
+    <div class="input-group">
+      <label id="slLbl">Stop-Loss %</label>
+      <input id="sl" type="number" min="0.5" max="10" step="0.1" value="2"/>
+    </div>
+
+    <div class="flex">
+      <button id="go" class="btn btn-primary">Get Signal</button>
+      <button id="csv" class="btn btn-secondary">Export CSV</button>
+    </div>
+
+    <div id="result" class="result">
+      <div class="flex">
+        <span id="symbol" class="badge"></span>
+        <span id="dirBadge" class="badge"></span>
+      </div>
+
+      <div class="grid">
+        <div class="cell">
+          <div class="label">Entry Price</div>
+          <div class="value" id="entry">—</div>
+        </div>
+        <div class="cell">
+          <div class="label">Stop-Loss</div>
+          <div class="value" id="slVal">—</div>
+        </div>
+        <div class="cell">
+          <div class="label">Take-Profit</div>
+          <div class="value" id="tpVal">—</div>
+        </div>
+        <div class="cell">
+          <div class="label">Confidence</div>
+          <div class="value" id="conf">—</div>
+        </div>
+      </div>
+
+      <div class="cell">
+        <div class="label">Rationale</div>
+        <div id="why" class="text-center mt-1">—</div>
+      </div>
+
+      <div class="note" id="notes">—</div>
+    </div>
+
+    <pre id="out" class="text-center">Click Get Signal</pre>
   </div>
 
   <script>
     const HF = 'https://arazph-trading-signals-backend.hf.space/signal';
     const html = document.documentElement;
 
-    /* ---------- i18n table ---------- */
+    /* ---------- i18n ---------- */
     const texts = {
-      en:{title:"Free Trading Signals (v0.1)",coin:"Coin",sl:"SL %",go:"Get Signal",csv:"Export CSV",out:"Click Get Signal",loading:"⏳ loading…",error:"❌ "},
-      es:{title:"Señales de Trading Gratis (v0.1)",coin:"Moneda",sl:"SL %",go:"Obtener Señal",csv:"Exportar CSV",out:"Haz clic para obtener señal",loading:"⏳ cargando…",error:"❌ "},
-      fr:{title:"Signaux de Trading Gratuits (v0.1)",coin:"Pièce",sl:"SL %",go:"Obtenir Signal",csv:"Exporter CSV",out:"Cliquez pour obtenir le signal",loading:"⏳ chargement…",error:"❌ "},
-      ar:{title:"إشارات تداول مجانية (v0.1)",coin:"عملة",sl:"SL %",go:"احصل على الإشارة",csv:"تصدير CSV",out:"انقر للحصول على الإشارة",loading:"⏳ جاري التحميل…",error:"❌ "},
-      tr:{title:"Ücretsiz Trading Sinyalleri (v0.1)",coin:"Coin",sl:"SL %",go:"Sinyal Al",csv:"CSV Dışa Aktar",out:"Sinyal almak için tıklayın",loading:"⏳ yükleniyor…",error:"❌ "},
-      ru:{title:"Бесплатные Торговые Сигналы (v0.1)",coin:"Монета",sl:"SL %",go:"Получить Сигнал",csv:"Экспорт CSV",out:"Нажмите, чтобы получить сигнал",loading:"⏳ загрузка…",error:"❌ "},
-      "zh-CN":{title:"免费交易信号 (v0.1)",coin:"币种",sl:"SL %",go:"获取信号",csv:"导出 CSV",out:"点击获取信号",loading:"⏳ 加载中…",error:"❌ "},
-      pt:{title:"Sinais de Trading Gratuitos (v0.1)",coin:"Moeda",sl:"SL %",go:"Obter Sinal",csv:"Exportar CSV",out:"Clique para obter o sinal",loading:"⏳ carregando…",error:"❌ "},
-      id:{title:"Sinyal Trading Gratis (v0.1)",coin:"Koin",sl:"SL %",go:"Dapatkan Sinyal",csv:"Ekspor CSV",out:"Klik untuk mendapatkan sinyal",loading:"⏳ memuat…",error:"❌ "},
-      vi:{title:"Tín Hiệu Giao Dịch Miễn Phí (v0.1)",coin:"Coin",sl:"SL %",go:"Lấy Tín Hiệu",csv:"Xuất CSV",out:"Nhấn để lấy tín hiệu",loading:"⏳ đang tải…",error:"❌ "}
+      en:{title:"Trading Signals Pro · v0.1",coin:"Coin",sl:"Stop-Loss %",go:"Get Signal",csv:"Export CSV",out:"Click Get Signal",loading:"⏳ Loading…",error:"❌ Backend error"},
+      es:{title:"Señales Pro · v0.1",coin:"Moneda",sl:"Stop-Loss %",go:"Obtener Señal",csv:"Exportar CSV",out:"Haz clic para obtener señal",loading:"⏳ Cargando…",error:"❌ Error de backend"},
+      fr:{title:"Signaux Pro · v0.1",coin:"Pièce",sl:"Stop-Loss %",go:"Obtenir Signal",csv:"Exporter CSV",out:"Cliquez pour obtenir le signal",loading:"⏳ Chargement…",error:"❌ Erreur backend"},
+      ar:{title:"إشارات برو · v0.1",coin:"عملة",sl:"Stop-Loss %",go:"احصل على الإشارة",csv:"تصدير CSV",out:"انقر للحصول على الإشارة",loading:"⏳ جاري التحميل…",error:"❌ خطاء في الخادم"},
+      tr:{title:"Pro Sinyaller · v0.1",coin:"Coin",sl:"Stop-Loss %",go:"Sinyal Al",csv:"CSV Dışa Aktar",out:"Sinyal almak için tıklayın",loading:"⏳ Yükleniyor…",error:"❌ Backend hatası"},
+      ru:{title:"Pro Сигналы · v0.1",coin:"Монета",sl:"Stop-Loss %",go:"Получить Сигнал",csv:"Экспорт CSV",out:"Нажмите, чтобы получить сигнал",loading:"⏳ Загрузка…",error:"❌ Ошибка бэкенда"},
+      "zh-CN":{title:"专业交易信号 · v0.1",coin:"币种",sl:"止损 %",go:"获取信号",csv:"导出 CSV",out:"点击获取信号",loading:"⏳ 加载中…",error:"❌ 后端错误"},
+      pt:{title:"Sinais Pro · v0.1",coin:"Moeda",sl:"Stop-Loss %",go:"Obter Sinal",csv:"Exportar CSV",out:"Clique para obter o sinal",loading:"⏳ Carregando…",error:"❌ Erro de backend"},
+      id:{title:"Sinyal Pro · v0.1",coin:"Koin",sl:"Stop-Loss %",go:"Dapatkan Sinyal",csv:"Ekspor CSV",out:"Klik untuk mendapatkan sinyal",loading:"⏳ Memuat…",error:"❌ Kesalahan backend"},
+      vi:{title:"Tín Hiệu Pro · v0.1",coin:"Coin",sl:"Stop-Loss %",go:"Lấy Tín Hiệu",csv:"Xuất CSV",out:"Nhấn để lấy tín hiệu",loading:"⏳ Đang tải…",error:"❌ Lỗi backend"}
     };
 
     const langSel = document.getElementById('lang');
@@ -107,31 +164,28 @@
     /* ---------- signal + pretty card ---------- */
     let lastSignal = null;
     const outBox = document.getElementById('out');
+    const result = document.getElementById('result');
 
     function renderSignal(sig){
-      const dirColor = sig.direction === 'Long' ? 'var(--green)' : 'var(--red)';
-      const card = `
-<div style="border:1px solid var(--bg);border-radius:12px;padding:1rem;background:var(--bg);font-size:.95rem;line-height:1.5;">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
-    <span style="font-size:1.1rem;font-weight:600;">${sig.symbol}</span>
-    <span style="color:${dirColor};font-weight:600;">${sig.direction}</span>
-  </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
-    <div><span style="opacity:.7;">Entry:</span> <b>${Number(sig.entry).toFixed(2)}</b></div>
-    <div><span style="opacity:.7;">SL:</span> <b>${Number(sig.sl).toFixed(2)}</b></div>
-    <div><span style="opacity:.7;">TP:</span> <b>${Number(sig.tp).toFixed(2)}</b></div>
-    <div><span style="opacity:.7;">Confidence:</span> <b>${sig.confidence}%</b></div>
-  </div>
-  <div style="margin-top:.75rem;font-size:.85rem;opacity:.9;">${sig.why}</div>
-  <div style="margin-top:.5rem;font-size:.8rem;opacity:.7;">${sig.whaleNote} | ${sig.optionsNote}</div>
-</div>`;
-      outBox.innerHTML = card;
+      const isLong = sig.direction === 'Long';
+      document.getElementById('symbol').textContent = sig.symbol;
+      document.getElementById('dirBadge').textContent = sig.direction;
+      document.getElementById('dirBadge').className = isLong ? 'badge badge-long' : 'badge badge-short';
+      document.getElementById('entry').textContent = Number(sig.entry).toFixed(2);
+      document.getElementById('slVal').textContent = Number(sig.sl).toFixed(2);
+      document.getElementById('tpVal').textContent = Number(sig.tp).toFixed(2);
+      document.getElementById('conf').textContent = sig.confidence + '%';
+      document.getElementById('why').textContent = sig.why;
+      document.getElementById('notes').textContent = sig.whaleNote + ' | ' + sig.optionsNote;
+      outBox.style.display = 'none';
+      result.classList.add('show');
     }
 
     document.getElementById('go').onclick = async () => {
       const c = document.getElementById('coin').value.trim() || 'BTC';
       const s = document.getElementById('sl').value;
       outBox.textContent = texts[savedLang].loading;
+      result.classList.remove('show');
       try {
         const res = await fetch(`${HF}?symbol=${c}&sl_pct=${s}`);
         if (!res.ok) throw new Error('Backend error '+res.status);
@@ -139,6 +193,8 @@
         renderSignal(lastSignal);
       } catch (e) {
         outBox.textContent = texts[savedLang].error + e;
+        result.classList.remove('show');
+        outBox.style.display = 'block';
       }
     };
 
