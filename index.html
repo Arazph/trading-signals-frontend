@@ -5,39 +5,34 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Trading Signals v0.1</title>
   <style>
-    /* ----- theme vars ----- */
+    /* ---------- theme vars ---------- */
     :root[data-theme="dark"]{--bg:#0d1117;--card:#161b22;--text:#c9d1d9;--accent:#58a6ff;--green:#3fb950;--red:#f85149}
     :root[data-theme="light"]{--bg:#f6f8fa;--card:#ffffff;--text:#24292f;--accent:#0969da;--green:#1a7f37;--red:#d1242f}
-    /* ----- global ----- */
+    /* ---------- global ---------- */
     *{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
     body{margin:0;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
-    a{color:var(--accent);text-decoration:none}
-    /* ----- glass card ----- */
-    .card{background:var(--card);border:1px solid var(--bg);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.2);width:100%;max-width:420px;padding:2rem;backdrop-filter:blur(4px)}
-    /* ----- header ----- */
+    /* ---------- glass card ---------- */
+    .card{background:var(--card);border:1px solid var(--bg);border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.2);width:100%;max-width:420px;padding:2rem;backdrop-filter:blur(4px);animation:fadeIn .6s ease-out}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    /* ---------- header ---------- */
     .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem}
+    h1{margin:0;font-size:1.5rem;font-weight:600}
     #themeToggle{background:var(--card);border:1px solid var(--bg);border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;transition:transform .2s}
     #themeToggle:hover{transform:rotate(30deg)}
-    h1{margin:0;font-size:1.5rem;font-weight:600}
-    /* ----- form ----- */
+    /* ---------- form ---------- */
     .form{display:flex;flex-direction:column;gap:.75rem}
     label{font-size:.9rem;font-weight:500}
     input,select{padding:.75rem;border:1px solid var(--bg);border-radius:8px;background:var(--card);color:var(--text);font-size:1rem;transition:border-color .2s}
     input:focus,select:focus{outline:none;border-color:var(--accent)}
-    .row{display:flex;gap:.5rem}
-    .row input{flex:1}
-    /* ----- buttons ----- */
+    /* ---------- buttons ---------- */
     .btn{padding:.75rem 1rem;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:all .2s}
     .primary{background:var(--accent);color:#fff}
     .primary:hover{filter:brightness(1.1)}
     .secondary{background:var(--card);color:var(--accent);border:1px solid var(--accent)}
-    /* ----- output ----- */
+    /* ---------- output ---------- */
     pre{margin:1rem 0 0;padding:1rem;border-radius:8px;background:var(--bg);font-size:.9rem;max-height:300px;overflow:auto}
-    /* ----- lang selector ----- */
+    /* ---------- lang selector ---------- */
     #lang{background:var(--card);border:1px solid var(--bg);border-radius:8px;padding:.25rem .5rem;font-size:.8rem}
-    /* ----- animations ----- */
-    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-    .card{animation:fadeIn .6s ease-out}
   </style>
 </head>
 <body>
@@ -67,7 +62,7 @@
     const HF = 'https://arazph-trading-signals-backend.hf.space/signal';
     const html = document.documentElement;
 
-    // ===== I18N =====
+    /* ---------- i18n table ---------- */
     const texts = {
       en:{title:"Free Trading Signals (v0.1)",coin:"Coin",sl:"SL %",go:"Get Signal",csv:"Export CSV",out:"Click Get Signal",loading:"⏳ loading…",error:"❌ "},
       es:{title:"Señales de Trading Gratis (v0.1)",coin:"Moneda",sl:"SL %",go:"Obtener Señal",csv:"Exportar CSV",out:"Haz clic para obtener señal",loading:"⏳ cargando…",error:"❌ "},
@@ -82,9 +77,7 @@
     };
 
     const langSel = document.getElementById('lang');
-    const ui = {};
-    ["title","coinLbl","slLbl","go","csv","out"].forEach(id=>ui[id]=document.getElementById(id));
-
+    const ui = {}; ["title","coinLbl","slLbl","go","csv","out"].forEach(id=>ui[id]=document.getElementById(id));
     function setLang(lang){
       if(!texts[lang]) lang='en';
       html.setAttribute('lang',lang);
@@ -100,7 +93,7 @@
     langSel.addEventListener('change',e=>setLang(e.target.value));
     setLang(savedLang);
 
-    // ===== THEME =====
+    /* ---------- theme ---------- */
     const toggle = document.getElementById('themeToggle');
     const savedTheme = localStorage.getItem('theme') || 'dark';
     html.setAttribute('data-theme',savedTheme);
@@ -111,22 +104,45 @@
       localStorage.setItem('theme',nxt);
     });
 
-    // ===== SIGNAL + CSV =====
+    /* ---------- signal + pretty card ---------- */
     let lastSignal = null;
+    const outBox = document.getElementById('out');
+
+    function renderSignal(sig){
+      const dirColor = sig.direction === 'Long' ? 'var(--green)' : 'var(--red)';
+      const card = `
+<div style="border:1px solid var(--bg);border-radius:12px;padding:1rem;background:var(--bg);font-size:.95rem;line-height:1.5;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+    <span style="font-size:1.1rem;font-weight:600;">${sig.symbol}</span>
+    <span style="color:${dirColor};font-weight:600;">${sig.direction}</span>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
+    <div><span style="opacity:.7;">Entry:</span> <b>${Number(sig.entry).toFixed(2)}</b></div>
+    <div><span style="opacity:.7;">SL:</span> <b>${Number(sig.sl).toFixed(2)}</b></div>
+    <div><span style="opacity:.7;">TP:</span> <b>${Number(sig.tp).toFixed(2)}</b></div>
+    <div><span style="opacity:.7;">Confidence:</span> <b>${sig.confidence}%</b></div>
+  </div>
+  <div style="margin-top:.75rem;font-size:.85rem;opacity:.9;">${sig.why}</div>
+  <div style="margin-top:.5rem;font-size:.8rem;opacity:.7;">${sig.whaleNote} | ${sig.optionsNote}</div>
+</div>`;
+      outBox.innerHTML = card;
+    }
+
     document.getElementById('go').onclick = async () => {
       const c = document.getElementById('coin').value.trim() || 'BTC';
       const s = document.getElementById('sl').value;
-      ui.out.textContent = texts[savedLang].loading;
+      outBox.textContent = texts[savedLang].loading;
       try {
         const res = await fetch(`${HF}?symbol=${c}&sl_pct=${s}`);
         if (!res.ok) throw new Error('Backend error '+res.status);
         lastSignal = await res.json();
-        ui.out.textContent = JSON.stringify(lastSignal,null,2);
+        renderSignal(lastSignal);
       } catch (e) {
-        ui.out.textContent = texts[savedLang].error + e;
+        outBox.textContent = texts[savedLang].error + e;
       }
     };
 
+    /* ---------- CSV export ---------- */
     document.getElementById('csv').onclick = () => {
       if (!lastSignal) return alert('Get a signal first');
       const row = [
