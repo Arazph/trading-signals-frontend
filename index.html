@@ -4,26 +4,37 @@
   <meta charset="utf-8"/>
   <title>Trading Signals v0.1</title>
   <style>
-    body{font-family:system-ui;background:#111;color:#0f0;text-align:center;padding-top:40vh}
-    button{padding:8px 16px;font-size:16px}
+    body{font-family:system-ui;background:#111;color:#0f0;padding:2rem;max-width:600px;margin:auto}
+    label,input,button{padding:8px;font-size:16px;margin:4px 0}
+    input{width:100px}
+    pre{background:#000;padding:1rem;white-space:pre-wrap}
+    .error{color:#f44}
   </style>
 </head>
 <body>
-  <h1>Trading Signals</h1>
-  <p>Backend waking up…</p>
-  <button id="ping">Ping HF Space</button>
-  <pre id="out"></pre>
+  <h1>Free Trading Signals (v0.1)</h1>
+  <label>Coin ticker:
+    <input id="coin" placeholder="BTC" value="BTC"/>
+  </label>
+  <label>SL %:
+    <input id="sl" type="number" min="0.5" max="10" step="0.1" value="2"/>
+  </label>
+  <button id="go">Get Signal</button>
+  <pre id="out">Click Get Signal</pre>
 
   <script>
-    const HF_URL = 'https://arazph-trading-signals-backend.hf.space';
-    document.getElementById('ping').onclick = async () => {
-      document.getElementById('out').textContent = '⏳ contacting HF…';
+    const HF = 'https://arazph-trading-signals-backend.hf.space/signal';
+    document.getElementById('go').onclick = async () => {
+      const c = document.getElementById('coin').value.trim() || 'BTC';
+      const s = document.getElementById('sl').value;
+      document.getElementById('out').textContent = '⏳ loading…';
       try {
-        const r = await fetch(HF_URL + '/health');
+        const r = await fetch(`${HF}?symbol=${c}&sl_pct=${s}`);
+        if (!r.ok) throw new Error('Backend error '+r.status);
         const j = await r.json();
-        document.getElementById('out').textContent = JSON.stringify(j, null, 2);
-      } catch(e) {
-        document.getElementById('out').textContent = '❌ ' + e;
+        document.getElementById('out').textContent = JSON.stringify(j,null,2);
+      } catch (e) {
+        document.getElementById('out').textContent = '❌ '+e;
       }
     };
   </script>
