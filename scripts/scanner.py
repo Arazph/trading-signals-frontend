@@ -24,6 +24,7 @@ def main():
     if bot and chat:
         txt = f"{COIN} {sig['direction']}  Entry={sig['entry']}  SL={sig['sl']}  TP={sig['tp']}  Conf={sig['confidence']}%"
         r.post(f"https://api.telegram.org/bot{bot}/sendMessage", json={"chat_id":chat,"text":txt})
+        print("Telegram sent")
 
     # Discord (optional)
     hook = os.getenv("DISCORD")
@@ -32,15 +33,16 @@ def main():
         print("Discord posted")
 
 def sheet_append(gid, key, row):
-    url = f"https://sheets.googleapis.com/v4/spreadsheets/{gid}/values/A:H/append?valueInputOption=RAW"
+    print("Raw GSHEET_ID from env:", repr(gid))
+    url = f"https://sheets.googleapis.com/v4/spreadsheets/{gid.strip()}/values/A:H/append?valueInputOption=RAW"
     body = {"values": [row]}
     hdr  = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
     print("Google URL:", url)
-    print("Google body:", json.dumps(body))
     resp = r.post(url, json=body, headers=hdr, timeout=15)
     print("Google status:", resp.status_code)
-    print("Google reply:", resp.text[:500])
-    resp.raise_for_status()
+    if resp.status_code != 200:
+        print("Google reply:", resp.text[:500])
+        resp.raise_for_status()
     print("Google append OK")
 
 if __name__ == "__main__":
