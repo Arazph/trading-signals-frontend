@@ -3,23 +3,27 @@
 <head>
   <meta charset="utf-8"/>
   <title>Trading Signals v0.1</title>
-  <style>body{font-family:system-ui;background:#111;color:#0f0;text-align:center;padding-top:40vh}</style>
+  <style>
+    body{font-family:system-ui;background:#111;color:#0f0;text-align:center;padding-top:40vh}
+    button{padding:8px 16px;font-size:16px}
+  </style>
 </head>
 <body>
   <h1>Trading Signals</h1>
   <p>Backend waking up…</p>
   <button id="ping">Ping HF Space</button>
   <pre id="out"></pre>
+
   <script>
-    const HF_URL = 'https://arazph-trading-signals-backend.hf.space'; // we’ll create this next
+    const HF_URL = 'https://arazph-trading-signals-backend.hf.space';
     document.getElementById('ping').onclick = async () => {
       document.getElementById('out').textContent = '⏳ contacting HF…';
       try {
-        const r = await fetch(HF_URL+'/health');
+        const r = await fetch(HF_URL + '/health');
         const j = await r.json();
-        document.getElementById('out').textContent = JSON.stringify(j,null,2);
+        document.getElementById('out').textContent = JSON.stringify(j, null, 2);
       } catch(e) {
-        document.getElementById('out').textContent = '❌ '+e;
+        document.getElementById('out').textContent = '❌ ' + e;
       }
     };
   </script>
