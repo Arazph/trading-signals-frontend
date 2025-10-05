@@ -10,39 +10,28 @@ def main():
     url = f"{HF}/signal?symbol={COIN}&sl_pct={SL}"
     sig = r.get(url, timeout=15).json()
     row = [now, COIN, sig["direction"], sig["entry"], sig["sl"], sig["tp"], sig["confidence"], sig["why"]]
-    print("Signal row:", row)
 
-    # Google Sheets
+    # Google Sheets (optional)
     key = os.getenv("GSHEET_KEY")
     gid = os.getenv("GSHEET_ID")
     if key and gid:
         sheet_append(gid, key, row)
 
-    # Telegram
+    # Telegram (optional)
     bot  = os.getenv("TG_BOT")
     chat = os.getenv("TG_CHAT")
     if bot and chat:
         txt = f"{COIN} {sig['direction']}  Entry={sig['entry']}  SL={sig['sl']}  TP={sig['tp']}  Conf={sig['confidence']}%"
         r.post(f"https://api.telegram.org/bot{bot}/sendMessage", json={"chat_id":chat,"text":txt})
-        print("Telegram sent")
 
-    # Discord
+    # Discord (optional)
     hook = os.getenv("DISCORD")
     if hook:
         r.post(hook, json={"content": f"🚀 {COIN} {sig['direction']}  Entry={sig['entry']}  SL={sig['sl']}  TP={sig['tp']}  Conf={sig['confidence']}%"})
-        print("Discord posted")
+
 def sheet_append(gid, key, row):
-    print("Raw GSHEET_ID from env:", repr(gid))
-    url = f"https://sheets.googleapis.com/v4/spreadsheets/{gid.strip()}/values/A:H/append?valueInputOption=RAW"
-    body = {"values": [row]}
-    hdr  = {"Authorization": f"Bearer {key}", "Content-Type": "application/json"}
-    print("Google URL:", url)
-    resp = r.post(url, json=body, headers=hdr, timeout=15)
-    print("Google status:", resp.status_code)
-    if resp.status_code != 200:
-        print("Google reply:", resp.text[:500])
-        resp.raise_for_status()
-    print("Google append OK")
+    url = f"https://sheets.googleapis.com/v4/spreadsheets/{gid}/values/A:H/append?valueInputOption=RAW"
+    r.post(url, json={"values": [row]}, headers={"Authorization": f"Bearer {key}"})
 
 if __name__ == "__main__":
     main()
