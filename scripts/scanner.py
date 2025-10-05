@@ -12,10 +12,10 @@ def main():
     row = [now, COIN, sig["direction"], sig["entry"], sig["sl"], sig["tp"], sig["confidence"], sig["why"]]
     print("Signal row:", row)
 
-    # Google Sheets – hard-coded correct ID for this test
+    # Google Sheets
     key = os.getenv("GSHEET_KEY")
-    gid = "1dxt49XwMX2XSQu1rFajR8_L-QuMJUrmFm2LVhK3v3c0"   # <-- hard-coded
-    if key:
+    gid = os.getenv("GSHEET_ID")
+    if key and gid:
         sheet_append(gid, key, row)
 
     # Telegram
