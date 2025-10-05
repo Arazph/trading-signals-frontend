@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>Trading Signals Pro · v0.1</title>
+  <title>Trading Signals Pro · v1.1</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root[data-theme="dark"]{--bg:#0f172a;--surface:#1e293b;--border:#334155;--text:#f1f5f9;--sub:#94a3b8;--accent:#38bdf8;--profit:#34d399;--loss:#f87171}
@@ -48,7 +48,7 @@
       <button id="themeToggle" title="Toggle theme">🌓</button>
     </div>
 
-    <div class="logo" id="title">Trading Signals Pro · v0.1</div>
+    <div class="logo" id="title">Trading Signals Pro · v1.1</div>
 
     <div class="input-group">
       <label id="coinLbl">Coin</label>
@@ -107,16 +107,16 @@
 
     /* ---------- i18n ---------- */
     const texts = {
-      en:{title:"Trading Signals Pro · v0.1",coin:"Coin",sl:"Stop-Loss %",go:"Get Signal",csv:"Export CSV",out:"Click Get Signal",loading:"⏳ Loading…",error:"❌ Backend error"},
-      es:{title:"Señales Pro · v0.1",coin:"Moneda",sl:"Stop-Loss %",go:"Obtener Señal",csv:"Exportar CSV",out:"Haz clic para obtener señal",loading:"⏳ Cargando…",error:"❌ Error de backend"},
-      fr:{title:"Signaux Pro · v0.1",coin:"Pièce",sl:"Stop-Loss %",go:"Obtenir Signal",csv:"Exporter CSV",out:"Cliquez pour obtenir le signal",loading:"⏳ Chargement…",error:"❌ Erreur backend"},
-      ar:{title:"إشارات برو · v0.1",coin:"عملة",sl:"Stop-Loss %",go:"احصل على الإشارة",csv:"تصدير CSV",out:"انقر للحصول على الإشارة",loading:"⏳ جاري التحميل…",error:"❌ خطاء في الخادم"},
-      tr:{title:"Pro Sinyaller · v0.1",coin:"Coin",sl:"Stop-Loss %",go:"Sinyal Al",csv:"CSV Dışa Aktar",out:"Sinyal almak için tıklayın",loading:"⏳ Yükleniyor…",error:"❌ Backend hatası"},
-      ru:{title:"Pro Сигналы · v0.1",coin:"Монета",sl:"Stop-Loss %",go:"Получить Сигнал",csv:"Экспорт CSV",out:"Нажмите, чтобы получить сигнал",loading:"⏳ Загрузка…",error:"❌ Ошибка бэкенда"},
-      "zh-CN":{title:"专业交易信号 · v0.1",coin:"币种",sl:"止损 %",go:"获取信号",csv:"导出 CSV",out:"点击获取信号",loading:"⏳ 加载中…",error:"❌ 后端错误"},
-      pt:{title:"Sinais Pro · v0.1",coin:"Moeda",sl:"Stop-Loss %",go:"Obter Sinal",csv:"Exportar CSV",out:"Clique para obter o sinal",loading:"⏳ Carregando…",error:"❌ Erro de backend"},
-      id:{title:"Sinyal Pro · v0.1",coin:"Koin",sl:"Stop-Loss %",go:"Dapatkan Sinyal",csv:"Ekspor CSV",out:"Klik untuk mendapatkan sinyal",loading:"⏳ Memuat…",error:"❌ Kesalahan backend"},
-      vi:{title:"Tín Hiệu Pro · v0.1",coin:"Coin",sl:"Stop-Loss %",go:"Lấy Tín Hiệu",csv:"Xuất CSV",out:"Nhấn để lấy tín hiệu",loading:"⏳ Đang tải…",error:"❌ Lỗi backend"}
+      en:{title:"Trading Signals Pro · v1.1",coin:"Coin",sl:"Stop-Loss %",go:"Get Signal",csv:"Export CSV",out:"Click Get Signal",loading:"⏳ Loading…",error:"❌ Backend error"},
+      es:{title:"Señales Pro · v1.1",coin:"Moneda",sl:"Stop-Loss %",go:"Obtener Señal",csv:"Exportar CSV",out:"Haz clic para obtener señal",loading:"⏳ Cargando…",error:"❌ Error de backend"},
+      fr:{title:"Signaux Pro · v1.1",coin:"Pièce",sl:"Stop-Loss %",go:"Obtenir Signal",csv:"Exporter CSV",out:"Cliquez pour obtenir le signal",loading:"⏳ Chargement…",error:"❌ Erreur backend"},
+      ar:{title:"إشارات برو · v1.1",coin:"عملة",sl:"Stop-Loss %",go:"احصل على الإشارة",csv:"تصدير CSV",out:"انقر للحصول على الإشارة",loading:"⏳ جاري التحميل…",error:"❌ خطاء في الخادم"},
+      tr:{title:"Pro Sinyaller · v1.1",coin:"Coin",sl:"Stop-Loss %",go:"Sinyal Al",csv:"CSV Dışa Aktar",out:"Sinyal almak için tıklayın",loading:"⏳ Yükleniyor…",error:"❌ Backend hatası"},
+      ru:{title:"Pro Сигналы · v1.1",coin:"Монета",sl:"Stop-Loss %",go:"Получить Сигнал",csv:"Экспорт CSV",out:"Нажмите, чтобы получить сигнал",loading:"⏳ Загрузка…",error:"❌ Ошибка бэкенда"},
+      "zh-CN":{title:"专业交易信号 · v1.1",coin:"币种",sl:"止损 %",go:"获取信号",csv:"导出 CSV",out:"点击获取信号",loading:"⏳ 加载中…",error:"❌ 后端错误"},
+      pt:{title:"Sinais Pro · v1.1",coin:"Moeda",sl:"Stop-Loss %",go:"Obter Sinal",csv:"Exportar CSV",out:"Clique para obter o sinal",loading:"⏳ Carregando…",error:"❌ Erro de backend"},
+      id:{title:"Sinyal Pro · v1.1",coin:"Koin",sl:"Stop-Loss %",go:"Dapatkan Sinyal",csv:"Ekspor CSV",out:"Klik untuk mendapatkan sinyal",loading:"⏳ Memuat…",error:"❌ Kesalahan backend"},
+      vi:{title:"Tín Hiệu Pro · v1.1",coin:"Coin",sl:"Stop-Loss %",go:"Lấy Tín Hiệu",csv:"Xuất CSV",out:"Nhấn để lấy tín hiệu",loading:"⏳ Đang tải…",error:"❌ Lỗi backend"}
     };
 
     const langSel = document.getElementById('lang');
@@ -147,7 +147,7 @@
       localStorage.setItem('theme',nxt);
     });
 
-    /* ---------- signal + pretty card + long rationale ---------- */
+    /* ---------- signal + pretty card + live research ---------- */
     let lastSignal = null;
     const outBox = document.getElementById('out');
     const result = document.getElementById('result');
@@ -162,39 +162,32 @@
       document.getElementById('tpVal').textContent = Number(sig.tp).toFixed(2);
       document.getElementById('conf').textContent = sig.confidence + '%';
 
-      /* ========== LONG-FORM RATIONALE WITH CLICKABLE SOURCES ========== */
       const riskPct   = ((sig.entry - sig.sl) / sig.entry * 100).toFixed(2);
       const rewardPct = ((sig.tp - sig.entry) / sig.entry * 100).toFixed(2);
       const whaleBias = sig.whaleNote.split(' ')[2] || '0.0 %';
 
-      const whyLong = `
+      let html = `
 <b>1. Micro-momentum</b><br>
 Last 6-period close vs. current close = <b>${riskPct} %</b>.  
-A positive micro-momentum suggests short-term buying pressure.  
 <a href="https://www.investopedia.com/terms/m/momentum.asp" target="_blank" rel="noopener">Investopedia - Momentum</a><br><br>
-
 <b>2. Whale flow</b><br>
-Net buy/sell volume ratio = <b>${whaleBias}</b> (last 100 trades).  
-When net buy > sell, large traders are accumulating.  
+Net buy/sell ratio = <b>${whaleBias}</b> (last 100 trades).  
 <a href="https://academy.binance.com/en/articles/what-is-a-whale" target="_blank" rel="noopener">Binance Academy - Whale</a><br><br>
-
-<b>3. Options skew</b><br>
-25-delta call-put difference = <b>0.0 %</b> (v0.1 stub).  
-Positive skew = calls expensive → bullish; negative = puts expensive → bearish.  
-<a href="https://www.investopedia.com/terms/o/optionskew.asp" target="_blank" rel="noopener">Investopedia - Skew</a><br><br>
-
-<b>4. Risk : Reward maths</b><br>
+<b>3. Risk : Reward</b><br>
 Risk = <b>${Number(sig.sl).toFixed(2)}</b> (${riskPct} % below entry).<br>
 Reward = <b>${Number(sig.tp).toFixed(2)}</b> (${rewardPct} % above entry).<br>
-R:R ≈ 1 : 1.5 (automatically calculated).<br><br>
+R:R ≈ 1 : 1.5<br><br>`;
 
-<b>5. Coin selection</b><br>
-${sig.symbol} chosen for high liquidity & tight spreads; signal valid for next 10-min candle.  
-Always verify on your exchange before placing orders.  
-<a href="https://www.binance.com/en/futures/${sig.symbol}USDT" target="_blank" rel="noopener">Live ${sig.symbol}USDT on Binance</a>
-      `;
+      /* ---------- LIVE RESEARCH (NEW) ---------- */
+      fetch(`${HF}/research?symbol=${sig.symbol}`)
+        .then(r=>r.json())
+        .then(res=>{
+           html += `<b>4. Live Research</b><br>${res.insight}<br><br><b>Sources:</b><br>`+
+                   res.sources.map(u=>`<a href="${u}" target="_blank" rel="noopener">${u}</a>`).join('<br>');
+           document.getElementById('why').innerHTML = html;
+        }).catch(()=>{/*silent fail*/});
 
-      document.getElementById('why').innerHTML = whyLong;
+      document.getElementById('why').innerHTML = html;  // deterministic part first
       document.getElementById('notes').textContent = sig.whaleNote + ' | ' + sig.optionsNote;
       outBox.style.display = 'none';
       result.classList.add('show');
@@ -206,7 +199,7 @@ Always verify on your exchange before placing orders.
       outBox.textContent = texts[savedLang].loading;
       result.classList.remove('show');
       try {
-        const res = await fetch(`${HF}?symbol=${c}&sl_pct=${s}`);
+        const res = await fetch(`${HF}/signal?symbol=${c}&sl_pct=${s}`);
         if (!res.ok) throw new Error('Backend error '+res.status);
         lastSignal = await res.json();
         renderSignal(lastSignal);
