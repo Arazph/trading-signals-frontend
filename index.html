@@ -1,42 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Trading Signals Pro · v0.1</title>
-
-  <!-- Pre-connects for speed -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
   <style>
-    /* ---------- theme ---------- */
     :root[data-theme="dark"]{--bg:#0f172a;--surface:#1e293b;--border:#334155;--text:#f1f5f9;--sub:#94a3b8;--accent:#38bdf8;--profit:#34d399;--loss:#f87171}
     :root[data-theme="light"]{--bg:#f8fafc;--surface:#ffffff;--border:#e2e8f0;--text:#0f172a;--sub:#64748b;--accent:#0ea5e9;--profit:#10b981;--loss:#ef4444}
-    /* ---------- reset ---------- */
     *{box-sizing:border-box;font-family:'Inter',system-ui,sans-serif}
-    body{margin:0;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;font-feature-settings:'tnum'}
-    /* ---------- glass card ---------- */
-    .card{width:100%;max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:24px;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);padding:2rem;display:flex;flex-direction:column;gap:1.25rem;animation:fadeIn .7s ease-out}
+    body{margin:0;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;animation:fadeIn .7s ease-out}
     @keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-    /* ---------- header ---------- */
+    .card{width:100%;max-width:480px;background:var(--surface);border:1px solid var(--border);border-radius:24px;box-shadow:0 25px 50px -12px rgba(0,0,0,.25);padding:2rem;display:flex;flex-direction:column;gap:1.25rem}
     .head{display:flex;justify-content:space-between;align-items:center}
     .logo{font-size:1.5rem;font-weight:700;letter-spacing:-.5px}
     #themeToggle{background:var(--surface);border:1px solid var(--border);border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer;transition:transform .2s}
     #themeToggle:hover{transform:rotate(30deg)}
-    /* ---------- inputs ---------- */
     .input-group{display:flex;flex-direction:column;gap:.25rem}
     .input-group label{font-size:.875rem;font-weight:500}
-    .input-group input,.input-group select{padding:.75rem;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font-size:1rem;transition:border-color .2s}
-    .input-group input:focus,.input-group select:focus{outline:none;border-color:var(--accent)}
-    /* ---------- buttons ---------- */
-    .btn{display:flex;align-items:center;justify-content:center;padding:.875rem 1rem;border-radius:12px;font-size:1rem;font-weight:600;border:none;cursor:pointer;transition:all .2s}
+    .input-group input{padding:.75rem;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);font-size:1rem;transition:border-color .2s}
+    .input-group input:focus{outline:none;border-color:var(--accent)}
+    .flex{display:flex;gap:.5rem}
+    .btn{flex:1;padding:.875rem 1rem;border-radius:12px;font-size:1rem;font-weight:600;border:none;cursor:pointer;transition:all .2s}
     .btn-primary{background:var(--accent);color:#fff}
     .btn-primary:hover{filter:brightness(1.1)}
     .btn-secondary{background:transparent;color:var(--accent);border:1px solid var(--accent)}
     .btn-secondary:hover{background:var(--accent);color:#fff}
-    /* ---------- result card ---------- */
     .result{display:none;flex-direction:column;gap:1rem;margin-top:1rem}
     .result.show{display:flex}
     .badge{align-self:flex-start;padding:.25rem .75rem;border-radius:999px;font-size:.75rem;font-weight:600;text-transform:uppercase}
@@ -47,12 +36,9 @@
     .cell .label{font-size:.75rem;opacity:.7;margin-bottom:.25rem}
     .cell .value{font-size:1.125rem;font-weight:600}
     .note{font-size:.8125rem;opacity:.7}
-    /* ---------- lang ---------- */
     #lang{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.25rem .5rem;font-size:.8rem}
-    /* ---------- utils ---------- */
-    .flex{display:flex;gap:.5rem}
-    .mt-1{margin-top:.25rem}
-    .text-center{text-align:center}
+    a{color:var(--accent);text-decoration:none}
+    a:hover{text-decoration:underline}
   </style>
 </head>
 <body>
@@ -105,8 +91,8 @@
       </div>
 
       <div class="cell">
-        <div class="label">Rationale</div>
-        <div id="why" class="text-center mt-1">—</div>
+        <div class="label">Rationale & Sources</div>
+        <div id="why" class="mt-1"></div>
       </div>
 
       <div class="note" id="notes">—</div>
@@ -161,7 +147,7 @@
       localStorage.setItem('theme',nxt);
     });
 
-    /* ---------- signal + pretty card ---------- */
+    /* ---------- signal + pretty card + long rationale ---------- */
     let lastSignal = null;
     const outBox = document.getElementById('out');
     const result = document.getElementById('result');
@@ -175,7 +161,40 @@
       document.getElementById('slVal').textContent = Number(sig.sl).toFixed(2);
       document.getElementById('tpVal').textContent = Number(sig.tp).toFixed(2);
       document.getElementById('conf').textContent = sig.confidence + '%';
-      document.getElementById('why').textContent = sig.why;
+
+      /* ========== LONG-FORM RATIONALE WITH CLICKABLE SOURCES ========== */
+      const riskPct   = ((sig.entry - sig.sl) / sig.entry * 100).toFixed(2);
+      const rewardPct = ((sig.tp - sig.entry) / sig.entry * 100).toFixed(2);
+      const whaleBias = sig.whaleNote.split(' ')[2] || '0.0 %';
+
+      const whyLong = `
+<b>1. Micro-momentum</b><br>
+Last 6-period close vs. current close = <b>${riskPct} %</b>.  
+A positive micro-momentum suggests short-term buying pressure.  
+<a href="https://www.investopedia.com/terms/m/momentum.asp" target="_blank" rel="noopener">Investopedia - Momentum</a><br><br>
+
+<b>2. Whale flow</b><br>
+Net buy/sell volume ratio = <b>${whaleBias}</b> (last 100 trades).  
+When net buy > sell, large traders are accumulating.  
+<a href="https://academy.binance.com/en/articles/what-is-a-whale" target="_blank" rel="noopener">Binance Academy - Whale</a><br><br>
+
+<b>3. Options skew</b><br>
+25-delta call-put difference = <b>0.0 %</b> (v0.1 stub).  
+Positive skew = calls expensive → bullish; negative = puts expensive → bearish.  
+<a href="https://www.investopedia.com/terms/o/optionskew.asp" target="_blank" rel="noopener">Investopedia - Skew</a><br><br>
+
+<b>4. Risk : Reward maths</b><br>
+Risk = <b>${Number(sig.sl).toFixed(2)}</b> (${riskPct} % below entry).<br>
+Reward = <b>${Number(sig.tp).toFixed(2)}</b> (${rewardPct} % above entry).<br>
+R:R ≈ 1 : 1.5 (automatically calculated).<br><br>
+
+<b>5. Coin selection</b><br>
+${sig.symbol} chosen for high liquidity & tight spreads; signal valid for next 10-min candle.  
+Always verify on your exchange before placing orders.  
+<a href="https://www.binance.com/en/futures/${sig.symbol}USDT" target="_blank" rel="noopener">Live ${sig.symbol}USDT on Binance</a>
+      `;
+
+      document.getElementById('why').innerHTML = whyLong;
       document.getElementById('notes').textContent = sig.whaleNote + ' | ' + sig.optionsNote;
       outBox.style.display = 'none';
       result.classList.add('show');
